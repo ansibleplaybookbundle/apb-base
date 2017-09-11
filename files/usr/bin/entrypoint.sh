@@ -41,7 +41,7 @@ SECRETS_DIR=/etc/apb-secrets
 mounted_secrets=$(ls $SECRETS_DIR)
 
 extra_args=""
-if [[ ! -e "$mounted_secrets" ]] ; then
+if [[ ! -z "$mounted_secrets" ]] ; then
 
     echo '---' > /tmp/secrets
 
