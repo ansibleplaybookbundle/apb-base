@@ -1,8 +1,6 @@
 FROM centos:7
 MAINTAINER Ansible Playbook Bundle Community
 
-LABEL "com.redhat.apb.version"="0.1.0"
-
 ENV USER_NAME=apb \ 
     USER_UID=1001 \ 
     BASE_DIR=/opt/apb
