@@ -1,8 +1,8 @@
 FROM centos:7
 MAINTAINER Ansible Playbook Bundle Community
 
-ENV USER_NAME=apb \ 
-    USER_UID=1001 \ 
+ENV USER_NAME=apb \
+    USER_UID=1001 \
     BASE_DIR=/opt/apb
 ENV HOME=${BASE_DIR}
 
@@ -41,7 +41,7 @@ RUN git clone https://github.com/ansible/ansible-kubernetes-modules.git /etc/ans
 RUN cd /etc/ansible/roles/ansible.kubernetes-modules \
     && git checkout 1684bd7a8cb592da3d922b38251d38876032d801
 
-RUN git clone https://github.com/fusor/ansible-asb-modules.git /etc/ansible/roles/ansibleplaybookbundle.asb-modules
+RUN git clone https://github.com/ansibleplaybookbundle/ansible-asb-modules.git /etc/ansible/roles/ansibleplaybookbundle.asb-modules
 
 RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
     && echo '[defaults]' > /etc/ansible/ansible.cfg \
