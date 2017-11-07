@@ -22,6 +22,7 @@ BuildArch:  noarch
 
 %install
 mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_sysconfdir}/apb-secrets
 install -m 755 files/usr/bin/bind-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/broker-bind-creds %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
@@ -37,6 +38,7 @@ install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 %{_bindir}/broker-bind-creds
 %{_bindir}/entrypoint.sh
 %{_bindir}/oc-login.sh
+%dir %{_sysconfdir}/apb-secrets
 
 %changelog
 * Fri Oct 13 2017 Jason Montleon <jmontleo@redhat.com> 1.0.4-1
