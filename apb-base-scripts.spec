@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.0.4
+Version:	1.0.5
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -41,6 +41,12 @@ install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 %dir %{_sysconfdir}/apb-secrets
 
 %changelog
+* Tue Nov 07 2017 Jason Montleon <jmontleo@redhat.com> 1.0.5-1
+- Bug 1510299 add missing /etc/apb-secrets (jmontleo@redhat.com)
+- Fixed link to ansible-asb-modules for canary (cchase@redhat.com)
+- Adding Apache License Version 2.0 file (matzew@apache.org)
+- update tito releasers (jmontleo@redhat.com)
+
 * Fri Oct 13 2017 Jason Montleon <jmontleo@redhat.com> 1.0.4-1
 - 1498185 - Removed version label from apb-base (dymurray@redhat.com)
 
