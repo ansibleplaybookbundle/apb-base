@@ -38,8 +38,6 @@ RUN cd openshift-restclient-python \
     && python setup.py install
 
 RUN git clone https://github.com/ansible/ansible-kubernetes-modules.git /etc/ansible/roles/ansible.kubernetes-modules
-RUN cd /etc/ansible/roles/ansible.kubernetes-modules \
-    && git checkout 1684bd7a8cb592da3d922b38251d38876032d801
 
 RUN git clone https://github.com/ansibleplaybookbundle/ansible-asb-modules.git /etc/ansible/roles/ansibleplaybookbundle.asb-modules
 
