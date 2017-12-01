@@ -23,8 +23,6 @@ BuildArch:  noarch
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_sysconfdir}/apb-secrets
-install -m 755 files/usr/bin/bind-init %{buildroot}%{_bindir}
-install -m 755 files/usr/bin/broker-bind-creds %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
