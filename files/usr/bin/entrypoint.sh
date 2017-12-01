@@ -73,14 +73,4 @@ if [ -f $TEST_RESULT ]; then
    test-retrieval-init
 fi
 
-# If we are provisioning an APB, but it's not bindable then the bind-creds
-# will never be created. Therefore, if bind-creds exists, we are running
-# either provision or bind and the APB is bindable.
-#
-# bind-init keeps the container running until the broker gathers the bind
-# credentials by exec'ing into the container.
-if [ -f $CREDS ]; then
-   bind-init
-fi
-
 exit $EXIT_CODE

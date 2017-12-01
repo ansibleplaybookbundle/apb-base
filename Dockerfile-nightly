@@ -1,5 +1,6 @@
 FROM centos:7
 MAINTAINER Ansible Playbook Bundle Community
+LABEL "com.redhat.apb.runtime"="2"
 
 ENV USER_NAME=apb \
     USER_UID=1001 \
