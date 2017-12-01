@@ -32,8 +32,6 @@ install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 %doc
 %{_bindir}/test-retrieval-init
 %{_bindir}/test-retrieval
-%{_bindir}/bind-init
-%{_bindir}/broker-bind-creds
 %{_bindir}/entrypoint.sh
 %{_bindir}/oc-login.sh
 %dir %{_sysconfdir}/apb-secrets
