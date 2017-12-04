@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.1.0
+Version:	1.1.1
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -37,6 +37,14 @@ install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
 %dir %{_sysconfdir}/apb-secrets
 
 %changelog
+* Mon Dec 04 2017 Jason Montleon <jmontleo@redhat.com> 1.1.1-1
+- Remove bind files from files section of rpm spec (david.j.zager@gmail.com)
+- Update the RPM spec for now deleted files (david.j.zager@gmail.com)
+- Add runtime label to apb-base (david.j.zager@gmail.com)
+- Canary apb-base should use latest asb modules (david.j.zager@gmail.com)
+- Remove bind credential scripts (david.j.zager@gmail.com)
+- bump release (#6) (jmrodri@gmail.com)
+
 * Tue Nov 07 2017 Jason Montleon <jmontleo@redhat.com> 1.0.5-1
 - Bug 1510299 add missing /etc/apb-secrets (jmontleo@redhat.com)
 - Fixed link to ansible-asb-modules for canary (cchase@redhat.com)
