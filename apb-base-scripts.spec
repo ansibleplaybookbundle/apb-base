@@ -23,18 +23,19 @@ BuildArch:  noarch
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_sysconfdir}/apb-secrets
+mkdir -p %{buildroot}/opt/apb/.kube
 install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
-install -m 755 files/usr/bin/oc-login.sh %{buildroot}%{_bindir}
+install -m 755 files/kubeconfig %{buildroot}/opt/apb/.kube/config
 
 %files
 %doc
 %{_bindir}/test-retrieval-init
 %{_bindir}/test-retrieval
 %{_bindir}/entrypoint.sh
-%{_bindir}/oc-login.sh
 %dir %{_sysconfdir}/apb-secrets
+/opt/apb/.kube/config
 
 %changelog
 * Mon Dec 04 2017 Jason Montleon <jmontleo@redhat.com> 1.1.1-1
