@@ -27,7 +27,7 @@ mkdir -p %{buildroot}/opt/apb/.kube
 install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
-install -m 755 files/kubeconfig %{buildroot}/opt/apb/.kube/config
+install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 
 %files
 %doc
