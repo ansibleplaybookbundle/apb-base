@@ -32,8 +32,6 @@ if ! whoami &> /dev/null; then
     echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> /etc/passwd
   fi
 fi
-oc-login.sh
-
 
 set +x
 

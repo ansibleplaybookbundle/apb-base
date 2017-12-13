@@ -21,5 +21,6 @@ RUN mkdir -p /usr/share/ansible/openshift \
 
 COPY files/etc/ansible/* /etc/ansible/
 COPY files/usr/bin/* /usr/bin/
+COPY files/kubeconfig /opt/apb/.kube/config
 
 ENTRYPOINT ["entrypoint.sh"]
