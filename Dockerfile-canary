@@ -49,7 +49,7 @@ RUN echo "localhost ansible_connection=local" > /etc/ansible/hosts \
 
 COPY files/etc/ansible/* /etc/ansible/
 COPY files/usr/bin/* /usr/bin/
-COPY files/opt/apb/* /opt/apb/
+COPY files/opt/apb/.kube/config /opt/apb/.kube/config
 
 RUN mkdir -p /usr/share/ansible/openshift \
               /etc/ansible /opt/ansible \
