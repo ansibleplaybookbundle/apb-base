@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.1.1
+Version:	1.1.2
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -38,6 +38,13 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 /opt/apb/.kube/config
 
 %changelog
+* Thu Dec 21 2017 Jason Montleon <jmontleo@redhat.com> 1.1.2-1
+- Remove erroneous copy in nightly, install it (david.j.zager@gmail.com)
+- Fix location where kube config is copied (david.j.zager@gmail.com)
+- Fixing dockerfiles after moving kube config (david.j.zager@gmail.com)
+- Move kubeconfig based on convention (david.j.zager@gmail.com)
+- Replace oc login with kube config (david.j.zager@gmail.com)
+
 * Mon Dec 04 2017 Jason Montleon <jmontleo@redhat.com> 1.1.1-1
 - Remove bind files from files section of rpm spec (david.j.zager@gmail.com)
 - Update the RPM spec for now deleted files (david.j.zager@gmail.com)
