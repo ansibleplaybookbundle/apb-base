@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.1.2
+Version:	1.1.3
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -38,6 +38,9 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 /opt/apb/.kube/config
 
 %changelog
+* Mon Jan 08 2018 David Zager <david.j.zager@gmail.com> 1.1.3-1
+- Update tito releasers (david.j.zager@gmail.com)
+
 * Thu Dec 21 2017 Jason Montleon <jmontleo@redhat.com> 1.1.2-1
 - Remove erroneous copy in nightly, install it (david.j.zager@gmail.com)
 - Fix location where kube config is copied (david.j.zager@gmail.com)
