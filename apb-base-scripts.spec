@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.1.3
+Version:	1.1.4
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -38,6 +38,9 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 /opt/apb/.kube/config
 
 %changelog
+* Mon Jan 08 2018 David Zager <david.j.zager@gmail.com> 1.1.4-1
+- Fixing tito releasers (david.j.zager@gmail.com)
+
 * Mon Jan 08 2018 David Zager <david.j.zager@gmail.com> 1.1.3-1
 - Update tito releasers (david.j.zager@gmail.com)
 
