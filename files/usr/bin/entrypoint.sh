@@ -58,7 +58,7 @@ elif [[ -e "$playbooks/$ACTION.yml" ]]; then
   ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yml  "${@}" ${extra_args}
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
-  exit 0
+  exit 8 # action not found
 fi
 
 EXIT_CODE=$?
