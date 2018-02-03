@@ -1,0 +1,4 @@
+plugin: k8s
+connections:
+    namespaces:
+    - {{ namespace }}

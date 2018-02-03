@@ -4,14 +4,14 @@
 %define build_timestamp %{nil}
 %endif
 
-Name: apb-base-scripts
-Version:	1.1.5
-Release:	1%{build_timestamp}%{?dist}
-Summary:	Scripts for the apb-base container image
+Name:       apb-base-scripts
+Version:    1.1.5
+Release:    1%{build_timestamp}%{?dist}
+Summary:    Scripts for the apb-base container image
 
-License:	ASL 2.0
-URL:		https://github.com/fusor/apb-examples
-Source0:	https://github.com/fusor/apb-examples/archive/%{name}-%{version}.tar.gz
+License:    ASL 2.0
+URL:        https://github.com/ansibleplaybookbundle/apb-base
+Source0:    https://github.com/ansibleplaybookbundle/apb-base/archive/%{name}-%{version}.tar.gz
 BuildArch:  noarch
 
 %description
@@ -28,6 +28,9 @@ install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
+install -m 755 files/etc/ansible/ansible.cfg %{buildroot}/etc/ansible/ansible.cfg
+install -m 755 files/etc/ansible/hosts %{buildroot}/etc/ansible/hosts
+install -m 755 files/etc/ansible/k8s.yml %{buildroot}/etc/ansible/k8s.yml
 
 %files
 %doc
@@ -36,6 +39,9 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 %{_bindir}/entrypoint.sh
 %dir %{_sysconfdir}/apb-secrets
 /opt/apb/.kube/config
+%{_sysconfdir}/ansible/ansible.cfg
+%{_sysconfdir}/ansible/hosts
+%{_sysconfdir}/ansible/k8s.yml
 
 %changelog
 * Fri Feb 02 2018 David Zager <david.j.zager@gmail.com> 1.1.5-1
@@ -81,4 +87,3 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 
 * Fri Aug 18 2017 Jason Montleon <jmontleo@redhat.com> 1.0.1-1
 - new package built with tito
-
