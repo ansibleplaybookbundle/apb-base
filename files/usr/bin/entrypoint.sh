@@ -22,6 +22,7 @@ if [[ $@ == *"s2i/assemble"* ]]; then
 fi
 
 ACTION=$1
+BUNDLE_NAME="${BUNDLE_NAME:-}"
 shift
 playbooks=/opt/apb/actions
 CREDS="/var/tmp/bind-creds"
@@ -56,6 +57,10 @@ if [[ -e "$playbooks/$ACTION.yaml" ]]; then
   ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yaml "${@}" ${extra_args}
 elif [[ -e "$playbooks/$ACTION.yml" ]]; then
   ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yml  "${@}" ${extra_args}
+elif [[ -e "$playbooks/$BUNDLE_NAME.yaml" ]]; then
+  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$BUNDLE_NAME.yaml "${@}" ${extra_args} -e action=$ACTION
+elif [[ -e "$playbooks/$BUNDLE_NAME.yml" ]]; then
+  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$BUNDLE_NAME.yml "${@}" ${extra_args} -e action=$ACTION
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
   exit 8 # action not found
