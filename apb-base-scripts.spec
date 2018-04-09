@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.1.5
+Version:	1.2.0
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
