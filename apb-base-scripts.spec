@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.2.0
+Version:	1.2.1
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -38,6 +38,10 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 /opt/apb/.kube/config
 
 %changelog
+* Mon Apr 09 2018 David Zager <david.j.zager@gmail.com> 1.2.1-1
+- Bump version for 3.10 (david.j.zager@gmail.com)
+- Add jmespath to canary image (david.j.zager@gmail.com)
+
 * Fri Feb 02 2018 David Zager <david.j.zager@gmail.com> 1.1.5-1
 - Bug 1533425 - return error when no action found (jmrodri@gmail.com)
 
