@@ -22,12 +22,15 @@ BuildArch:  noarch
 
 %install
 mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_sysconfdir}/ansible
 mkdir -p %{buildroot}%{_sysconfdir}/apb-secrets
 mkdir -p %{buildroot}/opt/apb/.kube
 install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
+install -m 755 files/etc/ansible/ansible.cfg %{buildroot}%{_sysconfdir}/ansible
+install -m 755 files/etc/ansible/hosts %{buildroot}%{_sysconfdir}/ansible
 
 %files
 %doc
@@ -35,6 +38,9 @@ install -m 755 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 %{_bindir}/test-retrieval
 %{_bindir}/entrypoint.sh
 %dir %{_sysconfdir}/apb-secrets
+%dir %{_sysconfdir}/ansible
+%{_sysconfdir}/ansible/ansible.cfg
+%{_sysconfdir}/ansible/hosts
 /opt/apb/.kube/config
 
 %changelog
