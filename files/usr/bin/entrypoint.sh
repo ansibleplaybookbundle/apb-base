@@ -1,6 +1,8 @@
 #!/bin/bash
 
-set -x
+if [[ $BUNDLE_DEBUG == "true" ]]; then
+    set -x
+fi
 
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
@@ -33,8 +35,6 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
-set +x
-
 SECRETS_DIR=/etc/apb-secrets
 mounted_secrets=$(ls $SECRETS_DIR)
 
@@ -50,7 +50,6 @@ if [[ ! -z "$mounted_secrets" ]] ; then
     done
     extra_args='--extra-vars no_log=true --extra-vars @/tmp/secrets'
 fi
-set -x
 
 if [[ -e "$playbooks/$ACTION.yaml" ]]; then
   ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook $playbooks/$ACTION.yaml "${@}" ${extra_args}
@@ -63,9 +62,9 @@ fi
 
 EXIT_CODE=$?
 
-set +ex
+set +e
 rm -f /tmp/secrets
-set -ex
+set -e
 
 if [ -f $TEST_RESULT ]; then
    test-retrieval-init
