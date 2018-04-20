@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.2.4
+Version:	1.2.5
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -44,6 +44,9 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Fri Apr 20 2018 Jason Montleon <jmontleo@redhat.com> 1.2.5-1
+- revert ownership settings on files (jmontleo@redhat.com)
+
 * Fri Apr 20 2018 Jason Montleon <jmontleo@redhat.com> 1.2.4-1
 - fix typos (jmontleo@redhat.com)
 
