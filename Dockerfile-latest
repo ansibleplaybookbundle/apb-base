@@ -21,4 +21,5 @@ RUN mkdir -p /usr/share/ansible/openshift \
 
 chmod 555 /
 
+WORKDIR /opt/apb
 ENTRYPOINT ["entrypoint.sh"]
