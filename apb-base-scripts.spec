@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.2.2
+Version:	1.2.3
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -44,6 +44,9 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Fri Apr 20 2018 Jason Montleon <jmontleo@redhat.com> 1.2.3-1
+- fix RPM conflict by placing these files elsewhere (jmontleo@redhat.com)
+
 * Thu Apr 19 2018 David Zager <david.j.zager@gmail.com> 1.2.2-1
 - Bug 1565241 - stops using bash "-x" unless in debug mode (#25)
   (mhrivnak@hrivnak.org)
