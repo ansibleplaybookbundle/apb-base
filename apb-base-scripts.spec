@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.2.1
+Version:	1.2.2
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -44,6 +44,14 @@ install -m 644 files/etc/ansible/hosts %{buildroot}%{_sysconfdir}/ansible
 /opt/apb/.kube/config
 
 %changelog
+* Thu Apr 19 2018 David Zager <david.j.zager@gmail.com> 1.2.2-1
+- Bug 1565241 - stops using bash "-x" unless in debug mode (#25)
+  (mhrivnak@hrivnak.org)
+- Use 644 (david.j.zager@gmail.com)
+- Include ansible config in rpm spec (david.j.zager@gmail.com)
+- Prevents ansible from trying to create retry files, which can't be used
+  anyway. (mhrivnak@redhat.com)
+
 * Mon Apr 09 2018 David Zager <david.j.zager@gmail.com> 1.2.1-1
 - Bump version for 3.10 (david.j.zager@gmail.com)
 - Add jmespath to canary image (david.j.zager@gmail.com)
