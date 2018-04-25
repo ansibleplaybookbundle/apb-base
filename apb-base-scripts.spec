@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.2.5
+Version:	1.2.6
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -44,6 +44,11 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Wed Apr 25 2018 David Zager <david.j.zager@gmail.com> 1.2.6-1
+- remove file glob and replace with proper Dockerfile syntax
+  (jmontleo@redhat.com)
+- Copy .kube directory to canary image (jmontleo@redhat.com)
+
 * Fri Apr 20 2018 Jason Montleon <jmontleo@redhat.com> 1.2.5-1
 - revert ownership settings on files (jmontleo@redhat.com)
 
