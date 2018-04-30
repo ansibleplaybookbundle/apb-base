@@ -27,19 +27,14 @@ RUN yum -y install epel-release centos-release-openshift-origin \
                       python-setuptools \
     && yum clean all
 
-RUN git clone https://github.com:/ansible/ansible.git
-RUN cd ansible \
-    && pip install -U setuptools \
-    && git checkout devel \
-    && python setup.py install \
-    && pip install jmespath
+RUN pip install ansible
 
-RUN git clone https://github.com/openshift/openshift-restclient-python
+RUN git clone -b dynamic-client https://github.com/fabianvf/openshift-restclient-python
 RUN cd openshift-restclient-python \
     && pip install -r requirements.txt \
     && python setup.py install
 
-RUN git clone https://github.com/ansible/ansible-kubernetes-modules.git /etc/ansible/roles/ansible.kubernetes-modules
+RUN git clone -b ansible2.6 https://github.com/ansible/ansible-kubernetes-modules.git /etc/ansible/roles/ansible.kubernetes-modules
 
 RUN git clone https://github.com/ansibleplaybookbundle/ansible-asb-modules.git /etc/ansible/roles/ansibleplaybookbundle.asb-modules
 
