@@ -26,7 +26,9 @@ fi
 ACTION=$1
 shift
 playbooks=/opt/apb/actions
-CREDS="/var/tmp/bind-creds"
+RUNNER_DIR=/opt/apb/runner
+RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
+RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
 TEST_RESULT="/var/tmp/test-result"
 
 if ! whoami &> /dev/null; then
@@ -35,36 +37,33 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
+echo '---' > $RUNNER_EXTRA_VARS
+echo $3 | sed 's/\([^ ]* [^ ]*\) /\1\n/g' >> /opt/apb/runner/env/extravars
+
 SECRETS_DIR=/etc/apb-secrets
 mounted_secrets=$(ls $SECRETS_DIR)
-
-extra_args=""
 if [[ ! -z "$mounted_secrets" ]] ; then
 
-    echo '---' > /tmp/secrets
+    echo 'no_log: True' >> $RUNNER_EXTRA_VARS
 
     for key in ${mounted_secrets} ; do
       for file in $(ls ${SECRETS_DIR}/${key}/..data); do
-        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> /tmp/secrets
+        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> $RUNNER_EXTRA_VARS
       done
     done
-    extra_args='--extra-vars no_log=true --extra-vars @/tmp/secrets'
 fi
 
 if [[ -e "$playbooks/$ACTION.yaml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook -i /etc/ansible/hosts $playbooks/$ACTION.yaml "${@}" ${extra_args}
+    mv "$playbooks/$ACTION.yaml" "$RUNNER_PROJECT_DIR/$ACTION.yml"
 elif [[ -e "$playbooks/$ACTION.yml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook -i /etc/ansible/hosts $playbooks/$ACTION.yml  "${@}" ${extra_args}
+    mv "$playbooks/$ACTION.yml" "$RUNNER_PROJECT_DIR/$ACTION.yml"
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
   exit 8 # action not found
 fi
 
+ansible-runner --inventory /etc/ansible/hosts --roles-path /etc/ansible/roles:/opt/ansible/roles --playbook $ACTION /opt/apb/runner
 EXIT_CODE=$?
-
-set +e
-rm -f /tmp/secrets
-set -e
 
 if [ -f $TEST_RESULT ]; then
    test-retrieval-init

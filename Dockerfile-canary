@@ -1,4 +1,4 @@
-FROM centos:7
+FROM ansible/ansible-runner:latest
 MAINTAINER Ansible Playbook Bundle Community
 LABEL "com.redhat.apb.runtime"="2"
 
@@ -27,13 +27,6 @@ RUN yum -y install epel-release centos-release-openshift-origin \
                       python-setuptools \
     && yum clean all
 
-RUN git clone https://github.com:/ansible/ansible.git
-RUN cd ansible \
-    && pip install -U setuptools \
-    && git checkout devel \
-    && python setup.py install \
-    && pip install jmespath
-
 RUN git clone https://github.com/openshift/openshift-restclient-python
 RUN cd openshift-restclient-python \
     && pip install -U urllib3==1.22 \
@@ -55,6 +48,7 @@ COPY files/opt/apb/. /opt/apb/
 RUN mkdir -p /usr/share/ansible/openshift \
               /etc/ansible /opt/ansible \
               ${BASE_DIR}/{etc,.kube,.ansible/tmp} \
+	      /opt/apb/runner \
               && useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} \
               && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
               && chmod -R g=u /opt/{ansible,apb} /etc/passwd
