@@ -1,8 +1,18 @@
 #!/bin/bash
 
-if [[ $BUNDLE_DEBUG == "true" ]]; then
-    set -x
-fi
+# TODO: Don't forget to add this back
+#if [[ $BUNDLE_DEBUG == "true" ]]; then
+#    set -x
+#fi
+set -x
+
+ACTION=$1
+EXTRA_VARS=$3
+
+RUNNER_DIR=/opt/apb/
+RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
+RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
+TEST_RESULT="/var/tmp/test-result"
 
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
@@ -23,23 +33,19 @@ if [[ $@ == *"s2i/assemble"* ]]; then
   exit $?
 fi
 
-ACTION=$1
-shift
-playbooks=/opt/apb/actions
-RUNNER_DIR=/opt/apb/runner
-RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
-RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
-TEST_RESULT="/var/tmp/test-result"
-
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
     echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> /etc/passwd
   fi
 fi
 
-echo '---' > $RUNNER_EXTRA_VARS
-echo $3 | sed 's/\([^ ]* [^ ]*\) /\1\n/g' >> /opt/apb/runner/env/extravars
+# Move playbooks to the action dir
+mv /opt/apb/actions $RUNNER_PROJECT_DIR
 
+# Write extra vars as YAML
+echo "$EXTRA_VARS" | python -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)' > $RUNNER_EXTRA_VARS
+
+# Add secrets to extra vars
 SECRETS_DIR=/etc/apb-secrets
 mounted_secrets=$(ls $SECRETS_DIR)
 if [[ ! -z "$mounted_secrets" ]] ; then
@@ -52,17 +58,18 @@ if [[ ! -z "$mounted_secrets" ]] ; then
       done
     done
 fi
+cat $RUNNER_EXTRA_VARS
 
-if [[ -e "$playbooks/$ACTION.yaml" ]]; then
-    mv "$playbooks/$ACTION.yaml" "$RUNNER_PROJECT_DIR/$ACTION.yml"
-elif [[ -e "$playbooks/$ACTION.yml" ]]; then
-    mv "$playbooks/$ACTION.yml" "$RUNNER_PROJECT_DIR/$ACTION.yml"
+if [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yaml" ]]; then
+    PLAYBOOK="$ACTION.yaml"
+elif [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yml" ]]; then
+    PLAYBOOK="$ACTION.yml"
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
   exit 8 # action not found
 fi
 
-ansible-runner --inventory /etc/ansible/hosts --roles-path /etc/ansible/roles:/opt/ansible/roles --playbook $ACTION /opt/apb/runner
+ansible-runner run --playbook $PLAYBOOK /opt/apb/
 EXIT_CODE=$?
 
 if [ -f $TEST_RESULT ]; then
