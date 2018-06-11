@@ -1,18 +1,20 @@
 #!/bin/bash
 
-# TODO: Don't forget to add this back
-#if [[ $BUNDLE_DEBUG == "true" ]]; then
-#    set -x
-#fi
+if [[ $BUNDLE_DEBUG == "true" ]]; then
+    set -x
+fi
 set -x
 
 ACTION=$1
 EXTRA_VARS=$3
 
 RUNNER_DIR=/opt/apb/
+PLAYBOOKS_DIR=/opt/apb/actions
 RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
 RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
 TEST_RESULT="/var/tmp/test-result"
+ROLE_NAME=$(echo $EXTRA_VARS | jq -r .role_name)
+ROLE_NAMESPACE=$(echo $EXTRA_VARS | jq -r .role_namespace)
 
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
@@ -39,8 +41,10 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
-# Move playbooks to the action dir
-mv /opt/apb/actions $RUNNER_PROJECT_DIR
+# Move playbooks to runner project directory
+if [ -d $PLAYBOOKS_DIR ]; then
+    mv $PLAYBOOKS_DIR $RUNNER_PROJECT_DIR
+fi
 
 # Write extra vars as YAML
 echo "$EXTRA_VARS" | python -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)' > $RUNNER_EXTRA_VARS
@@ -58,7 +62,12 @@ if [[ ! -z "$mounted_secrets" ]] ; then
       done
     done
 fi
-cat $RUNNER_EXTRA_VARS
+
+# Install role from galaxy
+if [ -n $ROLE_NAME ] && [ -n $ROLE_NAMESPACE ]; then
+    ansible-galaxy install $ROLE_NAMESPACE.$ROLE_NAME -p $RUNNER_PROJECT_DIR
+    mv $RUNNER_PROJECT_DIR/playbooks/* $RUNNER_PROJECT_DIR
+fi
 
 if [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yaml" ]]; then
     PLAYBOOK="$ACTION.yaml"
