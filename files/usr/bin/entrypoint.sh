@@ -8,7 +8,7 @@ set -x
 ACTION=$1
 EXTRA_VARS=$3
 
-RUNNER_DIR=/opt/apb/
+RUNNER_DIR=/opt/apb
 PLAYBOOKS_DIR=/opt/apb/actions
 RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
 RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
@@ -64,9 +64,8 @@ if [[ ! -z "$mounted_secrets" ]] ; then
 fi
 
 # Install role from galaxy
-if [ -n $ROLE_NAME ] && [ -n $ROLE_NAMESPACE ]; then
+if [[ $ROLE_NAME != "null" ]] && [[ $ROLE_NAMESPACE != "null" ]]; then
     ansible-galaxy install $ROLE_NAMESPACE.$ROLE_NAME -p $RUNNER_PROJECT_DIR
-    mv $RUNNER_PROJECT_DIR/playbooks/* $RUNNER_PROJECT_DIR
 fi
 
 if [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yaml" ]]; then
