@@ -3,18 +3,6 @@
 if [[ $BUNDLE_DEBUG == "true" ]]; then
     set -x
 fi
-set -x
-
-ACTION=$1
-EXTRA_VARS=$3
-
-RUNNER_DIR=/opt/apb
-PLAYBOOKS_DIR=/opt/apb/actions
-RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
-RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
-TEST_RESULT="/var/tmp/test-result"
-ROLE_NAME=$(echo $EXTRA_VARS | jq -r .role_name)
-ROLE_NAMESPACE=$(echo $EXTRA_VARS | jq -r .role_namespace)
 
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
@@ -34,6 +22,17 @@ if [[ $@ == *"s2i/assemble"* ]]; then
   exec "$@"
   exit $?
 fi
+
+ACTION=$1
+EXTRA_VARS=$3
+
+RUNNER_DIR=/opt/apb
+PLAYBOOKS_DIR=/opt/apb/actions
+RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
+RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
+TEST_RESULT="/var/tmp/test-result"
+ROLE_NAME=$(echo $EXTRA_VARS | jq -r .role_name)
+ROLE_NAMESPACE=$(echo $EXTRA_VARS | jq -r .role_namespace)
 
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
@@ -65,7 +64,7 @@ fi
 
 # Install role from galaxy
 if [[ $ROLE_NAME != "null" ]] && [[ $ROLE_NAMESPACE != "null" ]]; then
-    ansible-galaxy install $ROLE_NAMESPACE.$ROLE_NAME -p $RUNNER_PROJECT_DIR
+    ansible-galaxy install -s https://galaxy-qa.ansible.com $ROLE_NAMESPACE.$ROLE_NAME -p $RUNNER_PROJECT_DIR
 fi
 
 if [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yaml" ]]; then

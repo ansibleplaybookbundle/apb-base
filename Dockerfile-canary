@@ -27,6 +27,13 @@ RUN yum -y install epel-release centos-release-openshift-origin \
                       python-setuptools \
     && yum clean all
 
+RUN git clone https://github.com:/ansible/ansible.git
+RUN cd ansible \
+    && pip install -U setuptools \
+    && git checkout devel \
+    && python setup.py install \
+    && pip install jmespath
+
 RUN git clone https://github.com/openshift/openshift-restclient-python
 RUN cd openshift-restclient-python \
     && pip install -U urllib3==1.22 \
