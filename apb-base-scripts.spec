@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.2.6
+Version:	1.2.7
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -44,6 +44,11 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Thu Jun 14 2018 David Zager <david.j.zager@gmail.com> 1.2.7-1
+- manually install proper version of urllib3 (fabian@fabianism.us)
+- Bug 1589841: Hardcode the inventory to /etc/ansible/hosts
+  (rhallisey@localhost.localdomain)
+
 * Wed Apr 25 2018 David Zager <david.j.zager@gmail.com> 1.2.6-1
 - remove file glob and replace with proper Dockerfile syntax
   (jmontleo@redhat.com)
