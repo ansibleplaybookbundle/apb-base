@@ -24,10 +24,15 @@ if [[ $@ == *"s2i/assemble"* ]]; then
 fi
 
 ACTION=$1
-shift
-playbooks=/opt/apb/actions
-CREDS="/var/tmp/bind-creds"
+EXTRA_VARS=$3
+
+RUNNER_DIR=/opt/apb
+PLAYBOOKS_DIR=/opt/apb/actions
+RUNNER_PROJECT_DIR="$RUNNER_DIR/project"
+RUNNER_EXTRA_VARS="$RUNNER_DIR/env/extravars"
 TEST_RESULT="/var/tmp/test-result"
+ROLE_NAME=$(echo $EXTRA_VARS | jq -r .role_name)
+ROLE_NAMESPACE=$(echo $EXTRA_VARS | jq -r .role_namespace)
 
 if ! whoami &> /dev/null; then
   if [ -w /etc/passwd ]; then
@@ -35,36 +40,44 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
+# Move playbooks to runner project directory
+if [ -d $PLAYBOOKS_DIR ]; then
+    mv $PLAYBOOKS_DIR $RUNNER_PROJECT_DIR
+fi
+
+# Write extra vars as YAML
+echo "$EXTRA_VARS" | python -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)' > $RUNNER_EXTRA_VARS
+
+# Add secrets to extra vars
 SECRETS_DIR=/etc/apb-secrets
 mounted_secrets=$(ls $SECRETS_DIR)
-
-extra_args=""
 if [[ ! -z "$mounted_secrets" ]] ; then
 
-    echo '---' > /tmp/secrets
+    echo 'no_log: True' >> $RUNNER_EXTRA_VARS
 
     for key in ${mounted_secrets} ; do
       for file in $(ls ${SECRETS_DIR}/${key}/..data); do
-        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> /tmp/secrets
+        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> $RUNNER_EXTRA_VARS
       done
     done
-    extra_args='--extra-vars no_log=true --extra-vars @/tmp/secrets'
 fi
 
-if [[ -e "$playbooks/$ACTION.yaml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook -i /etc/ansible/hosts $playbooks/$ACTION.yaml "${@}" ${extra_args}
-elif [[ -e "$playbooks/$ACTION.yml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook -i /etc/ansible/hosts $playbooks/$ACTION.yml  "${@}" ${extra_args}
+# Install role from galaxy
+if [[ $ROLE_NAME != "null" ]] && [[ $ROLE_NAMESPACE != "null" ]]; then
+    ansible-galaxy install -s https://galaxy-qa.ansible.com $ROLE_NAMESPACE.$ROLE_NAME -p $RUNNER_PROJECT_DIR
+fi
+
+if [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yaml" ]]; then
+    PLAYBOOK="$ACTION.yaml"
+elif [[ -e "$RUNNER_PROJECT_DIR/$ACTION.yml" ]]; then
+    PLAYBOOK="$ACTION.yml"
 else
   echo "'$ACTION' NOT IMPLEMENTED" # TODO
   exit 8 # action not found
 fi
 
+ansible-runner run --playbook $PLAYBOOK /opt/apb/
 EXIT_CODE=$?
-
-set +e
-rm -f /tmp/secrets
-set -e
 
 if [ -f $TEST_RESULT ]; then
    test-retrieval-init

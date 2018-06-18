@@ -1,4 +1,4 @@
-FROM centos:7
+FROM ansible/ansible-runner:latest
 MAINTAINER Ansible Playbook Bundle Community
 LABEL "com.redhat.apb.runtime"="2"
 
@@ -8,13 +8,13 @@ ENV USER_NAME=apb \
 ENV HOME=${BASE_DIR}
 
 
-RUN mkdir -p /usr/share/ansible/openshift \
-             /etc/ansible /opt/apb /opt/ansible
+RUN mkdir -p /usr/share/ansible/openshift /etc/ansible /opt/apb/env /opt/ansible
 
 RUN yum -y install epel-release centos-release-openshift-origin \
     && yum -y update \
     && yum -y install bind-utils \
                       gcc \
+		      jq \
                       libffi-devel \
                       make \
                       net-tools \
