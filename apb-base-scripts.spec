@@ -25,8 +25,8 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_sysconfdir}/ansible
 mkdir -p %{buildroot}%{_sysconfdir}/apb-secrets
 mkdir -p %{buildroot}/opt/apb/.kube
-install -m 644 files/opt/apb/ansible.cfg %{buildroot}/opt/apb
-install -m 644 files/opt/apb/hosts %{buildroot}/opt/apb
+install -m 644 files/opt/apb/.ansible.cfg %{buildroot}/opt/apb
+install -m 644 files/opt/apb/inventory/hosts %{buildroot}/opt/apb
 install -m 775 files/opt/apb/.kube/config %{buildroot}/opt/apb/.kube/config
 install -m 755 files/usr/bin/test-retrieval-init %{buildroot}%{_bindir}
 install -m 755 files/usr/bin/test-retrieval %{buildroot}%{_bindir}
@@ -39,8 +39,8 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 %{_bindir}/entrypoint.sh
 %dir %{_sysconfdir}/apb-secrets
 %dir %{_sysconfdir}/ansible
-/opt/apb/ansible.cfg
-/opt/apb/hosts
+/opt/apb/.ansible.cfg
+/opt/apb/inventory/hosts
 /opt/apb/.kube/config
 
 %changelog
