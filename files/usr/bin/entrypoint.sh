@@ -31,10 +31,9 @@ fi
 
 ACTION=$1
 shift
-EXTRA_ARGS="${@}"
 PLAYBOOKS="/opt/apb/project"
 PASSWORDS="/opt/apb/env/passwords"
-CMDLINE="/opt/apb/env/cmdline"
+EXTRAVARS="/opt/apb/env/extravars"
 CREDS="/var/tmp/bind-creds"
 TEST_RESULT="/var/tmp/test-result"
 SECRETS_DIR="/etc/apb-secrets"
@@ -51,16 +50,18 @@ if [[ ! -z "$mounted_secrets" ]] ; then
         echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> $PASSWORDS
       done
     done
-    EXTRA_ARGS="${EXTRA_ARGS} --extra-vars no_log=true"
 fi
-echo "${EXTRA_ARGS}" > $CMDLINE
+
+# Add extravars
+echo $2 > $EXTRAVARS
 
 # Install role from galaxy
 # Used when apb-base is the runner image for the ansible-galaxy adapter
 if [[ $ROLE_NAME != "null" ]] && [[ $ROLE_NAMESPACE != "null" ]]; then
+    PROPER_ROLE_NAME=${ROLE_NAME//_/-}
     ansible-galaxy install -s https://galaxy-qa.ansible.com $ROLE_NAMESPACE.$ROLE_NAME -p /opt/ansible/roles
-    mv /opt/ansible/roles/$ROLE_NAMESPACE.$ROLE_NAME /opt/ansible/roles/$ROLE_NAME
-    mv /opt/ansible/roles/$ROLE_NAME/playbooks $PLAYBOOKS
+    mv /opt/ansible/roles/$ROLE_NAMESPACE.$ROLE_NAME /opt/ansible/roles/$PROPER_ROLE_NAME
+    mv /opt/ansible/roles/$PROPER_ROLE_NAME/playbooks $PLAYBOOKS
 fi
 
 # Move the playbooks if necessary
@@ -80,8 +81,8 @@ else
 fi
 
 # Invoke ansible-runner
-ansible-runner run --playbook $PLAYBOOK /opt/apb
-EXIT_CODE=$?
+ansible-runner run --ident $ACTION --playbook $PLAYBOOK /opt/apb
+EXIT_CODE=$(cat /opt/apb/artifacts/$ACTION/rc)
 
 set +e
 rm -f /tmp/secrets

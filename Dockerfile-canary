@@ -1,4 +1,5 @@
 FROM ansible/ansible-runner:latest
+
 MAINTAINER Ansible Playbook Bundle Community
 LABEL "com.redhat.apb.runtime"="2"
 
