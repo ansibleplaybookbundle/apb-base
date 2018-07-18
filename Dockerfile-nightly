@@ -13,7 +13,7 @@ RUN yum -y install epel-release centos-release-openshift-origin jq \
     && yum clean all
 
 RUN mkdir -p /usr/share/ansible/openshift \
-             /etc/ansible /opt/apb/env /opt/ansible \
+             /etc/ansible /opt/apb /opt/ansible \
              ${BASE_DIR}/{etc,.kube,.ansible/tmp} \
              && useradd -u ${USER_UID} -r -g 0 -M -d ${BASE_DIR} -b ${BASE_DIR} -s /sbin/nologin -c "apb user" ${USER_NAME} \
              && chown -R ${USER_NAME}:0 /opt/{ansible,apb} \
