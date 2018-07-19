@@ -18,56 +18,78 @@ fi
 # https://github.com/openshift/source-to-image/issues/475
 #
 if [[ $@ == *"s2i/assemble"* ]]; then
-  echo "---> Performing S2I build... Skipping server startup"
-  exec "$@"
-  exit $?
+    echo "---> Performing S2I build... Skipping server startup"
+    exec "$@"
+    exit $?
+fi
+
+if ! whoami &> /dev/null; then
+    if [ -w /etc/passwd ]; then
+        echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> /etc/passwd
+    fi
 fi
 
 ACTION=$1
 shift
-playbooks=/opt/apb/actions
+PLAYBOOKS="/opt/apb/project"
+PASSWORDS="/opt/apb/env/passwords"
+EXTRAVARS="/opt/apb/env/extravars"
 CREDS="/var/tmp/bind-creds"
 TEST_RESULT="/var/tmp/test-result"
+SECRETS_DIR="/etc/apb-secrets"
+ROLE_NAME=$(echo $2 | jq -r .role_name 2>/dev/null || echo "null")
+ROLE_NAMESPACE=$(echo $2 | jq -r .role_namespace 2>/dev/null || echo "null")
 
-if ! whoami &> /dev/null; then
-  if [ -w /etc/passwd ]; then
-    echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> /etc/passwd
-  fi
-fi
-
-SECRETS_DIR=/etc/apb-secrets
+# Handle mounted secrets
 mounted_secrets=$(ls $SECRETS_DIR)
-
-extra_args=""
 if [[ ! -z "$mounted_secrets" ]] ; then
 
-    echo '---' > /tmp/secrets
-
+    echo '---' > $PASSWORDS
     for key in ${mounted_secrets} ; do
       for file in $(ls ${SECRETS_DIR}/${key}/..data); do
-        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> /tmp/secrets
+        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> $PASSWORDS
       done
     done
-    extra_args='--extra-vars no_log=true --extra-vars @/tmp/secrets'
 fi
 
-if [[ -e "$playbooks/$ACTION.yaml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook -i /etc/ansible/hosts $playbooks/$ACTION.yaml "${@}" ${extra_args}
-elif [[ -e "$playbooks/$ACTION.yml" ]]; then
-  ANSIBLE_ROLES_PATH=/etc/ansible/roles:/opt/ansible/roles ansible-playbook -i /etc/ansible/hosts $playbooks/$ACTION.yml  "${@}" ${extra_args}
+# Add extravars
+echo $2 > $EXTRAVARS
+
+# Install role from galaxy
+# Used when apb-base is the runner image for the ansible-galaxy adapter
+if [[ $ROLE_NAME != "null" ]] && [[ $ROLE_NAMESPACE != "null" ]]; then
+    PROPER_ROLE_NAME=${ROLE_NAME//_/-}
+    ansible-galaxy install -s https://galaxy-qa.ansible.com $ROLE_NAMESPACE.$ROLE_NAME -p /opt/ansible/roles
+    mv /opt/ansible/roles/$ROLE_NAMESPACE.$ROLE_NAME /opt/ansible/roles/$PROPER_ROLE_NAME
+    mv /opt/ansible/roles/$PROPER_ROLE_NAME/playbooks $PLAYBOOKS
+fi
+
+# Move the playbooks if necessary
+if [[ ! -d "/opt/apb/project" ]]; then
+    echo "DEPRECATED: APB playbooks should be stored at /opt/apb/project"
+    mv /opt/apb/actions $PLAYBOOKS
+fi
+
+# Determine the playbook to be executed
+if [[ -e "$PLAYBOOKS/$ACTION.yaml" ]]; then
+    PLAYBOOK="$ACTION.yaml"
+elif [[ -e "$PLAYBOOKS/$ACTION.yml" ]]; then
+    PLAYBOOK="$ACTION.yml"
 else
-  echo "'$ACTION' NOT IMPLEMENTED" # TODO
+  echo "'$ACTION' NOT IMPLEMENTED"
   exit 8 # action not found
 fi
 
-EXIT_CODE=$?
+# Invoke ansible-runner
+ansible-runner run --ident $ACTION --playbook $PLAYBOOK /opt/apb
+EXIT_CODE=$(cat /opt/apb/artifacts/$ACTION/rc)
 
 set +e
 rm -f /tmp/secrets
 set -e
 
 if [ -f $TEST_RESULT ]; then
-   test-retrieval-init
+    test-retrieval-init
 fi
 
 exit $EXIT_CODE
