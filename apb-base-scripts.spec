@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.3.0
+Version:	1.3.1
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -47,6 +47,15 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Mon Jul 23 2018 David Zager <david.j.zager@gmail.com> 1.3.1-1
+- Use ansible-runner in APB Base (#36) (dzager@redhat.com)
+- Revert "Use epel-testing for apb-base:latest" (dzager@redhat.com)
+- Use epel-testing for apb-base:latest (david.j.zager@gmail.com)
+- Bump version (#35) (dzager@redhat.com)
+- manually install proper version of urllib3 (fabian@fabianism.us)
+- Hardcode the inventory to /etc/ansible/hosts
+  (rhallisey@localhost.localdomain)
+
 * Wed Apr 25 2018 David Zager <david.j.zager@gmail.com> 1.2.6-1
 - remove file glob and replace with proper Dockerfile syntax
   (jmontleo@redhat.com)
