@@ -1,3 +1,5 @@
 ---
-idle_timeout: 600 # If no output is detected from ansible in this number of seconds the execution will be terminated.
-job_timeout: 3600 # The maximum amount of time to allow the job to run for, exceeding this and the execution will be terminated.
+
+# Disable the idle/job timeout
+idle_timeout: 0
+job_timeout: 0
