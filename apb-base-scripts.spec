@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.3.1
+Version:	1.3.2
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -49,6 +49,9 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Thu Jul 26 2018 David Zager <david.j.zager@gmail.com> 1.3.2-1
+- Add settings for ansible-runner (#41) (dzager@redhat.com)
+
 * Mon Jul 23 2018 David Zager <david.j.zager@gmail.com> 1.3.1-1
 - Use ansible-runner in APB Base (#36) (dzager@redhat.com)
 - Revert "Use epel-testing for apb-base:latest" (dzager@redhat.com)
