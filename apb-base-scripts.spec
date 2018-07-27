@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.3.2
+Version:	1.3.3
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -49,6 +49,9 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Fri Jul 27 2018 David Zager <david.j.zager@gmail.com> 1.3.3-1
+- Copy actions instead of moving (#42) (dzager@redhat.com)
+
 * Thu Jul 26 2018 David Zager <david.j.zager@gmail.com> 1.3.2-1
 - Add settings for ansible-runner (#41) (dzager@redhat.com)
 
