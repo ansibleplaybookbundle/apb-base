@@ -37,13 +37,13 @@ EXTRAVARS="/opt/apb/env/extravars"
 CREDS="/var/tmp/bind-creds"
 TEST_RESULT="/var/tmp/test-result"
 SECRETS_DIR="/etc/apb-secrets"
+GALAXY_URL=$(echo $2 | jq -r .galaxy_url 2>/dev/null || echo "null")
 ROLE_NAME=$(echo $2 | jq -r .role_name 2>/dev/null || echo "null")
 ROLE_NAMESPACE=$(echo $2 | jq -r .role_namespace 2>/dev/null || echo "null")
 
 # Handle mounted secrets
 mounted_secrets=$(ls $SECRETS_DIR)
 if [[ ! -z "$mounted_secrets" ]] ; then
-
     echo '---' > $PASSWORDS
     for key in ${mounted_secrets} ; do
       for file in $(ls ${SECRETS_DIR}/${key}/..data); do
@@ -59,7 +59,15 @@ echo $2 > $EXTRAVARS
 # Used when apb-base is the runner image for the ansible-galaxy adapter
 if [[ $ROLE_NAME != "null" ]] && [[ $ROLE_NAMESPACE != "null" ]]; then
     PROPER_ROLE_NAME=${ROLE_NAME//_/-}
-    ansible-galaxy install -s https://galaxy-qa.ansible.com $ROLE_NAMESPACE.$ROLE_NAME -p /opt/ansible/roles
+
+    # Since the galaxy_url is passed from the broker, it should never be null
+    # If absent though, we should just assume we are using galaxy.ansible.com
+    if [[ $GALAXY_URL != "null" ]]; then
+        ansible-galaxy install -s $GALAXY_URL $ROLE_NAMESPACE.$ROLE_NAME -p /opt/ansible/roles
+    else
+        ansible-galaxy install $ROLE_NAMESPACE.$ROLE_NAME -p /opt/ansible/roles
+    fi
+
     mv /opt/ansible/roles/$ROLE_NAMESPACE.$ROLE_NAME /opt/ansible/roles/$PROPER_ROLE_NAME
     mv /opt/ansible/roles/$PROPER_ROLE_NAME/playbooks $PLAYBOOKS
 fi
