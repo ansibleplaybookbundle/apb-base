@@ -67,7 +67,8 @@ fi
 # Move the playbooks if necessary
 if [[ ! -d "/opt/apb/project" ]]; then
     echo "DEPRECATED: APB playbooks should be stored at /opt/apb/project"
-    mv /opt/apb/actions $PLAYBOOKS
+    mkdir -p /opt/apb/project
+    cp /opt/apb/actions/* $PLAYBOOKS
 fi
 
 # Determine the playbook to be executed
