@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.3.3
+Version:	1.3.4
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -49,6 +49,9 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 /opt/apb/.kube/config
 
 %changelog
+* Fri Jul 27 2018 David Zager <david.j.zager@gmail.com> 1.3.4-1
+- Accept galaxy_url parameter from broker (#43) (dzager@redhat.com)
+
 * Fri Jul 27 2018 David Zager <david.j.zager@gmail.com> 1.3.3-1
 - Copy actions instead of moving (#42) (dzager@redhat.com)
 
