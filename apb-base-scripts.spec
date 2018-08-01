@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.3.4
+Version:	1.3.5
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -53,6 +53,9 @@ getent passwd apb >/dev/null || \
   /usr/sbin/useradd -u 1001 -r -g 0 -M -d /opt/apb -b /opt/apb -s /sbin/nologin -c "apb user" apb
 
 %changelog
+* Wed Aug 01 2018 David Zager <david.j.zager@gmail.com> 1.3.5-1
+- Create user and Set file permissions in the rpm (#32) (jmontleo@redhat.com)
+
 * Fri Jul 27 2018 David Zager <david.j.zager@gmail.com> 1.3.4-1
 - Accept galaxy_url parameter from broker (#43) (dzager@redhat.com)
 
