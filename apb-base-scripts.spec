@@ -42,11 +42,15 @@ install -m 755 files/usr/bin/entrypoint.sh %{buildroot}%{_bindir}
 %{_bindir}/entrypoint.sh
 %dir %{_sysconfdir}/apb-secrets
 %dir %{_sysconfdir}/ansible
-%dir /opt/apb/env
-/opt/apb/.ansible.cfg
-/opt/apb/inventory/hosts
-/opt/apb/env/settings
-/opt/apb/.kube/config
+%attr(0775, apb, root) %dir /opt/apb/env
+%attr(0664, apb, root) /opt/apb/.ansible.cfg
+%attr(0664, apb, root) /opt/apb/inventory/hosts
+%attr(0664, apb, root) /opt/apb/env/settings
+%attr(0775, apb, root) /opt/apb/.kube/config
+
+%pre
+getent passwd apb >/dev/null || \
+  /usr/sbin/useradd -u 1001 -r -g 0 -M -d /opt/apb -b /opt/apb -s /sbin/nologin -c "apb user" apb
 
 %changelog
 * Fri Jul 27 2018 David Zager <david.j.zager@gmail.com> 1.3.4-1
