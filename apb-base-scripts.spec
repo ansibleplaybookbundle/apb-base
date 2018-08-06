@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.3.5
+Version:	1.3.6
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -53,6 +53,9 @@ getent passwd apb >/dev/null || \
   /usr/sbin/useradd -u 1001 -r -g 0 -M -d /opt/apb -b /opt/apb -s /sbin/nologin -c "apb user" apb
 
 %changelog
+* Mon Aug 06 2018 David Zager <david.j.zager@gmail.com> 1.3.6-1
+- Bug 1612004: Remove dependency on jq (david.j.zager@gmail.com)
+
 * Wed Aug 01 2018 David Zager <david.j.zager@gmail.com> 1.3.5-1
 - Create user and Set file permissions in the rpm (#32) (jmontleo@redhat.com)
 
