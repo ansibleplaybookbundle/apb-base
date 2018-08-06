@@ -16,7 +16,6 @@ RUN yum -y install epel-release centos-release-openshift-origin \
     && yum -y update \
     && yum -y install bind-utils \
                       gcc \
-                      jq \
                       libffi-devel \
                       make \
                       net-tools \

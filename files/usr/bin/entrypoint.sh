@@ -37,9 +37,9 @@ EXTRAVARS="/opt/apb/env/extravars"
 CREDS="/var/tmp/bind-creds"
 TEST_RESULT="/var/tmp/test-result"
 SECRETS_DIR="/etc/apb-secrets"
-GALAXY_URL=$(echo $2 | jq -r .galaxy_url 2>/dev/null || echo "null")
-ROLE_NAME=$(echo $2 | jq -r .role_name 2>/dev/null || echo "null")
-ROLE_NAMESPACE=$(echo $2 | jq -r .role_namespace 2>/dev/null || echo "null")
+GALAXY_URL=$(echo $2 | python -c 'import sys, json; print json.load(sys.stdin)["galaxy_url"]' 2>/dev/null || echo "null")
+ROLE_NAME=$(echo $2 | python -c 'import sys, json; print json.load(sys.stdin)["role_name"]' 2>/dev/null || echo "null")
+ROLE_NAMESPACE=$(echo $2 | python -c 'import sys, json; print json.load(sys.stdin)["role_namespace"]' 2>/dev/null || echo "null")
 
 # Handle mounted secrets
 mounted_secrets=$(ls $SECRETS_DIR)
