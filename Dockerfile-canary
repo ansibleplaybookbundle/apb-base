@@ -29,6 +29,12 @@ RUN yum -y install epel-release centos-release-openshift-origin \
                       python-setuptools \
     && yum clean all
 
+#Workaround for installing python-daemon (pulled in by ansible-runner)
+RUN pip install docutils
+
+#Pin Jinja2 to work around https://github.com/ansible/ansible/issues/40185
+RUN pip install Jinja2==2.7.2
+
 RUN pip install \
     https://github.com/ansible/ansible/archive/devel.tar.gz \
     https://github.com/ansible/ansible-runner/archive/master.tar.gz \
