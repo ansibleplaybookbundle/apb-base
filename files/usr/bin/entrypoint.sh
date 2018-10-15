@@ -4,6 +4,17 @@ if [[ $BUNDLE_DEBUG == "true" ]]; then
     set -x
 fi
 
+usage() {
+    echo -n 'Usage: entrypoint.sh ACTION FLAG JSONSTRING
+      ACTION     - one of [provision, deprovision, bind, unbind, test] verbs
+      FLAG       - deprecated and will be dropped in the future
+      JSONSTRING - a valid json string to be used as extra args for the playbook execution
+
+      The command line args are positional.
+      Please see the this for reference - https://github.com/openshift/ansible-service-broker/blob/ansible-service-broker-1.4.1-1/docs/service-bundle.md#input
+'
+}
+
 # Work-Around
 # The OpenShift's s2i (source to image) requires that no ENTRYPOINT exist
 # for any of the s2i builder base images.  Our 's2i-apb' builder uses the
@@ -29,17 +40,21 @@ if ! whoami &> /dev/null; then
     fi
 fi
 
+
 ACTION=$1
-shift
+FLAG=$2
+JSONSTRING=$3
+[[ "$#" -lt 3 ]] && usage && exit 1
+
 PLAYBOOKS="/opt/apb/project"
 PASSWORDS="/opt/apb/env/passwords"
 EXTRAVARS="/opt/apb/env/extravars"
 CREDS="/var/tmp/bind-creds"
 TEST_RESULT="/var/tmp/test-result"
 SECRETS_DIR="/etc/apb-secrets"
-GALAXY_URL=$(echo $2 | python -c 'import sys, json; print json.load(sys.stdin)["galaxy_url"]' 2>/dev/null || echo "null")
-ROLE_NAME=$(echo $2 | python -c 'import sys, json; print json.load(sys.stdin)["role_name"]' 2>/dev/null || echo "null")
-ROLE_NAMESPACE=$(echo $2 | python -c 'import sys, json; print json.load(sys.stdin)["role_namespace"]' 2>/dev/null || echo "null")
+GALAXY_URL=$(echo $JSONSTRING | python -c 'import sys, json; print json.load(sys.stdin)["galaxy_url"]' 2>/dev/null || echo "null")
+ROLE_NAME=$(echo $JSONSTRING | python -c 'import sys, json; print json.load(sys.stdin)["role_name"]' 2>/dev/null || echo "null")
+ROLE_NAMESPACE=$(echo $JSONSTRING | python -c 'import sys, json; print json.load(sys.stdin)["role_namespace"]' 2>/dev/null || echo "null")
 
 # Handle mounted secrets
 mounted_secrets=$(ls $SECRETS_DIR)
@@ -53,7 +68,7 @@ if [[ ! -z "$mounted_secrets" ]] ; then
 fi
 
 # Add extravars
-echo $2 > $EXTRAVARS
+echo $JSONSTRING > $EXTRAVARS
 
 # Install role from galaxy
 # Used when apb-base is the runner image for the ansible-galaxy adapter
