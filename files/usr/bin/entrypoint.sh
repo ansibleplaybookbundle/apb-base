@@ -90,6 +90,7 @@ else
 fi
 
 # Invoke ansible-runner
+export PYTHONUNBUFFERED=True
 ansible-runner run --ident $ACTION --playbook $PLAYBOOK /opt/apb
 EXIT_CODE=$(cat /opt/apb/artifacts/$ACTION/rc)
 
