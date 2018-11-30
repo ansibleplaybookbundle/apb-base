@@ -1,4 +1,4 @@
-FROM centos:7 
+FROM centos:7
 MAINTAINER Ansible Playbook Bundle Community
 LABEL "com.redhat.apb.runtime"="2"
 
@@ -11,7 +11,7 @@ RUN curl https://copr.fedorainfracloud.org/coprs/g/ansible-service-broker/ansibl
 RUN rpm --import https://copr-be.cloud.fedoraproject.org/results/@ansible-service-broker/ansible-service-broker-latest/pubkey.gpg \
  && yum -y install https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/ansible-2.5.9-1.el7.ans.noarch.rpm \
  && yum -y install epel-release centos-release-openshift-origin git \
-    && yum -y install --setopt=tsflags=nodocs origin-clients python-openshift ansible-kubernetes-modules ansible-asb-modules apb-base-scripts \
+    && yum -y install --setopt=tsflags=nodocs origin-clients python-openshift ansible-kubernetes-modules ansible-asb-modules apb-base-scripts python2-jmespath \
     && yum clean all
 
 RUN mkdir -p /usr/share/ansible/openshift \

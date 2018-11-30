@@ -9,7 +9,7 @@ ENV HOME=${BASE_DIR}
 
 RUN curl https://copr.fedorainfracloud.org/coprs/g/ansible-service-broker/ansible-service-broker-latest/repo/epel-7/group_ansible-service-broker-ansible-service-broker-latest-epel-7.repo -o /etc/yum.repos.d/asb.repo
 RUN yum -y install epel-release centos-release-openshift-origin git \
-    && yum -y install --setopt=tsflags=nodocs origin-clients python-openshift ansible ansible-kubernetes-modules ansible-asb-modules apb-base-scripts \
+    && yum -y install --setopt=tsflags=nodocs origin-clients python-openshift ansible ansible-kubernetes-modules ansible-asb-modules apb-base-scripts python2-jmespath \
     && yum clean all
 
 RUN mkdir -p /usr/share/ansible/openshift \
