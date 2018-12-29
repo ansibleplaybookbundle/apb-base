@@ -45,7 +45,13 @@ if [[ ! -z "$mounted_secrets" ]] ; then
 
     for key in ${mounted_secrets} ; do
       for file in $(ls ${SECRETS_DIR}/${key}/..data); do
-        echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> /tmp/secrets
+        lines=$(< ${SECRETS_DIR}/${key}/..data/${file} wc -l)
+        if [ ${lines} -gt 0 ]; then
+          echo "$file: |" >> /tmp/secrets
+          echo "$(cat ${SECRETS_DIR}/${key}/..data/${file} | sed 's/^/  /')" >> /tmp/secrets
+        else
+          echo "$file: $(cat ${SECRETS_DIR}/${key}/..data/${file})" >> /tmp/secrets
+        fi
       done
     done
     extra_args='--extra-vars no_log=true --extra-vars @/tmp/secrets'
