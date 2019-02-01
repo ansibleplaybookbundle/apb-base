@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.4.1
+Version:	1.4.2
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -53,6 +53,14 @@ getent passwd apb >/dev/null || \
   /usr/sbin/useradd -u 1001 -r -g 0 -M -d /opt/apb -b /opt/apb -s /sbin/nologin -c "apb user" apb
 
 %changelog
+* Fri Feb 01 2019 Jason Montleon <jmontleo@redhat.com> 1.4.2-1
+- Add jmespath to apb-base (#54) (dzager@redhat.com)
+- Validate and print usage in case of wrong entrypoint usage (#49)
+  (rgolan@redhat.com)
+- Disable buffered output (#52) (jmontleo@redhat.com)
+- Fix apb-base canary (jmontleo@redhat.com)
+- add v3.10 and v3.11 Dockerfiles (jmontleo@redhat.com)
+
 * Fri Sep 14 2018 jesus m. rodriguez <jmrodri@gmail.com> 1.4.1-1
 - Prepare branch for 4.0 release (#48) (jmrodri@gmail.com)
 - Add git to fix ansible-galaxy - issue 1073 (jmontleo@redhat.com)
