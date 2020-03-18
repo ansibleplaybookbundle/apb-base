@@ -5,7 +5,7 @@
 %endif
 
 Name: apb-base-scripts
-Version:	1.4.2
+Version:	1.4.3
 Release:	1%{build_timestamp}%{?dist}
 Summary:	Scripts for the apb-base container image
 
@@ -55,6 +55,9 @@ getent passwd apb >/dev/null || \
   /usr/sbin/useradd -u 1001 -r -g 0 -M -d /opt/apb -b /opt/apb -s /sbin/nologin -c "apb user" apb
 
 %changelog
+* Tue Mar 17 2020 jesus m. rodriguez <jesusr@redhat.com> 1.4.3-1
+- Bug 1793336: use nss_wrapper method to update passwd (#58) (jesusr@redhat.com)
+
 * Fri Feb 01 2019 Jason Montleon <jmontleo@redhat.com> 1.4.2-1
 - Add jmespath to apb-base (#54) (dzager@redhat.com)
 - Validate and print usage in case of wrong entrypoint usage (#49)
