@@ -14,6 +14,8 @@ URL:		https://github.com/fusor/apb-examples
 Source0:	https://github.com/fusor/apb-examples/archive/%{name}-%{version}.tar.gz
 BuildArch:  noarch
 
+Requires: nss_wrapper
+
 %description
 %{summary}
 

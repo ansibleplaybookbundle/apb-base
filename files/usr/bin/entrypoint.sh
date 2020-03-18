@@ -29,6 +29,23 @@ if ! whoami &> /dev/null; then
     fi
 fi
 
+USER_ID=$(id -u)
+
+if [ x"$USER_ID" != x"0" -a x"$USER_ID" != x"1001" ]; then
+    NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
+    NSS_WRAPPER_GROUP=/etc/group
+
+    cp /etc/passwd $NSS_WRAPPER_PASSWD
+
+    echo "${USER_NAME:-apb}:x:$(id -u):0:${USER_NAME:-apb} user:${HOME}:/sbin/nologin" >> $NSS_WRAPPER_PASSWD
+
+    export NSS_WRAPPER_PASSWD
+    export NSS_WRAPPER_GROUP
+
+    LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+    export LD_PRELOAD
+fi
+
 ACTION=$1
 shift
 PLAYBOOKS="/opt/apb/project"
