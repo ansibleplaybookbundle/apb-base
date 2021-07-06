@@ -1,7 +1,7 @@
 # apb-base
 
 This is a base image that can be used to create an [Ansible Playbook
-Bundle](https://github.com/ansibleplaybookbundle/ansible-playbook-bundle).
+Bundle](https://github.com/automationbroker/apb).
 
 ## Debug
 
